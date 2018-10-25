@@ -1,0 +1,21 @@
+#!/bin/bash
+#//This script reads from a file IPLIST.txt in the working directory //
+#//Put one IP address on each line // 
+#//Output is dircted to IPRESULTS.csv in the working directory //
+#//created by Dustin Lee NOV 2015//
+touch IPRESULTS.csv
+echo $(date) > IPRESULTS.csv
+TelnetFun () {
+        local IP=$1
+        echo > /dev/tcp/$IP/22
+        OUTPUT1=$?
+        if [ $OUTPUT1 -eq 0 ]
+        then
+            echo "$IP, is up" >> IPRESULTS.csv
+        else
+            echo "$IP, is down" >> IPRESULTS.csv
+        fi
+        }
+RUNLIST="IPLIST.txt"
+RUNLINES=$(cat $RUNLIST)
+for IP in $RUNLINES; do TelnetFun $IP & done
